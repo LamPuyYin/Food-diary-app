@@ -1,0 +1,60 @@
+/fodmap.filtered.json
+/fodmap.json
+/TODO
+/server/pb_data/
+server/pb_data/auxiliary.db
+server/pb_data/data.db
+server/*.log
+
+# Local environment configuration
+.env
+.env.*
+!.env.example
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.local
+*.pem
+*.key
+*.p12
+
+# Local databases and runtime data
+*.db
+*.sqlite
+*.sqlite3
+server/pb_data/
+
+# Logs and debug output
+*.log
+*.log.*
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Operating system and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Generated build output
+**/target/
+**/dist/
+**/node_modules/
+
+# Generated installers and bundles
+**/bundle/
+*.exe
+*.msi
+*.dmg
+*.appimage
+*.deb
+*.rpm
+*.apk
+*.aab
+*.ipa

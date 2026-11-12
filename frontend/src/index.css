@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..800&family=Nunito:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Organic design tokens: one source for colour, shape, depth, and rhythm. */
+  --bg: #fdfcf8;
+  --panel: #fefefa;
+  --panel-muted: #f0ebe5;
+  --moss: #5d7052;
+  --moss-deep: #40513a;
+  --clay: #c18c5d;
+  --sand: #e6dccd;
+  --text: #4a4a40;
+  --text-muted: #78786c;
+  --text-strong: #2c2c24;
+  --accent-strong: var(--moss);
+  --border: rgba(222, 216, 207, 0.85);
+  --radius-sm: 1rem;
+  --radius-md: 1.5rem;
+  --radius-lg: 2rem;
+  --shadow-soft: 0 4px 20px -2px rgba(93, 112, 82, 0.15);
+  --shadow-float: 0 10px 40px -10px rgba(193, 140, 93, 0.2);
+  --shadow: var(--shadow-soft), var(--shadow-float);
+  --font-sans: 'Nunito', 'Avenir Next', 'Trebuchet MS', 'Segoe UI', sans-serif;
+  --font-display: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 65% 45% at -5% -5%, rgba(93, 112, 82, 0.14), transparent 70%),
+    radial-gradient(ellipse 45% 35% at 105% 95%, rgba(193, 140, 93, 0.15), transparent 70%),
+    var(--bg);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E");
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+button, a, input, textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(93, 112, 82, 0.42);
+  outline-offset: 3px;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}
+

@@ -1,0 +1,8 @@
+﻿*** Begin Patch
+*** Update File: frontend/src/pages/StatsPage.tsx
+@@
+-                      Symptom {ingredient.symptomExposure.toFixed(2)} vs safe {' '}
+-                      {ingredient.safeExposure.toFixed(2)}
++                      Symptom exposure {ingredient.symptomExposure.toFixed(2)} vs safe baseline exposure{' '}
++                      {ingredient.safeExposure.toFixed(2)}
+*** End Patch
