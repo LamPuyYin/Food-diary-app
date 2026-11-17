@@ -1,6 +1,10 @@
 # Gutmost
+<img width="1431" height="890" alt="Screenshot home" src="https://github.com/user-attachments/assets/16b0e442-40e6-4e8c-8491-a356903701d9" />
+
 
 Gutmost is a private, native desktop food and symptom diary built primarily for tracking diarrhea-predominant IBS (IBS-D) triggers. It helps users record meals, ingredients, acute bowel episodes, and rapid food-to-symptom correlations over time.
+
+> Gutmost operates entirely offline on your Windows PC. All meal logs, symptom entries, and trigger analytics are stored exclusively in a local database on your device. No data is and will ever be collected, uploaded, or shared with anyone
 
 ## Features
 
@@ -9,9 +13,14 @@ Gutmost is a private, native desktop food and symptom diary built primarily for 
 - Browse a FODMAP ingredient library and add personal trigger ingredients.
 - Review calendar activity, recent entries, and correlation statistics geared toward identifying diarrhea triggers.
 - Run as a self-contained Windows desktop app with a local PocketBase database.
+<img width="450" height="265" alt="Screenshot bowel" src="https://github.com/user-attachments/assets/d0b511e2-9a5c-436e-a60f-0dc52f3c8942" />
+<img width="450" height="265" alt="Screenshot stats" src="https://github.com/user-attachments/assets/05d244cb-7500-45da-b896-9b4d639064d9" />
+<img width="450" height="265" alt="Screenshot ingredients" src="https://github.com/user-attachments/assets/2511f5c7-fe01-485b-962a-6835b2e7693f" />
+<img width="450" height="265" alt="Screenshot calendar" src="https://github.com/user-attachments/assets/45b8f8b0-b2c8-4ff6-8142-0a2bc42de8cf" />
 
 
-## Technology
+> 
+## Build with
 
 - React, TypeScript, and Vite for the interface
 - Tauri 2 and Rust for the native desktop application
@@ -19,7 +28,7 @@ Gutmost is a private, native desktop food and symptom diary built primarily for 
 
 ## Quick start
 
-## Download
+### Download Installer
 
 Download the latest Windows installer from the
 [GitHub Releases page](../../releases/latest).
