@@ -281,11 +281,14 @@
 .workspace {
   display: grid;
   gap: 18px;
+  align-content:start;
   min-width: 0;
+  max-height:fit-content;
   padding: 8px 0 18px;
 }
 
 .medical-disclaimer {
+  max-height: fit-content;
   display: flex;
   align-items: flex-start;
   gap: 9px;
