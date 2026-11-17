@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { compareDesc, parseISO } from 'date-fns'
 import { pb } from '../lib/pocketbase'
 import {
@@ -22,14 +22,16 @@ type TrackerDataResult = {
   addIngredient: (ingredient: IngredientRecord) => void
 }
 
-export function useTrackerData(): TrackerDataResult {
+export function useTrackerData(enabled = true): TrackerDataResult {
   const [ingredients, setIngredients] = useState<IngredientRecord[]>([])
   const [foodLogs, setFoodLogs] = useState<FoodLogRecord[]>([])
   const [symptomLogs, setSymptomLogs] = useState<SymptomLogRecord[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
 
-  const reload = async () => {
+  const reload = useCallback(async () => {
+    if (!enabled) return
+
     setIsLoading(true)
     setLoadError(null)
 
@@ -78,7 +80,7 @@ export function useTrackerData(): TrackerDataResult {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [enabled])
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -86,7 +88,7 @@ export function useTrackerData(): TrackerDataResult {
     }, 0)
 
     return () => window.clearTimeout(timeoutId)
-  }, [])
+  }, [reload])
 
   const stats = useMemo<TrackerStatsItem[]>(
     () => {

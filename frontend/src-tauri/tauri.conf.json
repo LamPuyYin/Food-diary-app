@@ -31,7 +31,8 @@
     "shortDescription": "A private food and symptom diary",
     "externalBin": ["binaries/pocketbase"],
     "resources": {
-      "../../server/pb_migrations/": "pb_migrations/"
+      "../../server/pb_migrations/": "pb_migrations/",
+      "../../server/pb_hooks/": "pb_hooks/"
     },
     "icon": [
       "icons/32x32.png",

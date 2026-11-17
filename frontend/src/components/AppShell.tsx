@@ -1,7 +1,8 @@
-import { type ReactNode } from 'react'
+import { type MouseEvent, type ReactNode } from 'react'
 import {
   Activity,
   CalendarDays,
+  ExternalLink,
   Home,
   Info,
   Search,
@@ -10,6 +11,7 @@ import {
 } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 import { PAGE_META, type AppRoute, type TrackerStatsItem } from '../lib/tracker'
+import { openExternalUrl } from '../lib/openExternalUrl'
 import { PageTransition } from './PageTransition'
 import logo from '../assets/logo-48.ico'
 
@@ -28,12 +30,25 @@ const NAV_ITEMS: Array<{
 type AppShellProps = {
   stats: TrackerStatsItem[]
   loadError: string | null
+  backendUrl: string
+  registrationRequired: boolean
   children: ReactNode
 }
 
-export function AppShell({ stats, loadError, children }: AppShellProps) {
+export function AppShell({ loadError, backendUrl, registrationRequired, children }: AppShellProps) {
+  async function openPocketBase(event: MouseEvent<HTMLAnchorElement>) {
+    if (!('__TAURI_INTERNALS__' in window)) return
+
+    event.preventDefault()
+    try {
+      await openExternalUrl(`${backendUrl}/_/`)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
-    <main className="app-shell">
+    <main className={`app-shell ${registrationRequired ? 'app-shell--locked' : ''}`}>
       <aside className="sidebar">
         <div className="brand">
           <div className="brand-mark">
@@ -59,14 +74,11 @@ export function AppShell({ stats, loadError, children }: AppShellProps) {
           ))}
         </nav>
 
-        <div className="sidebar-stats">
-          {stats.map((stat) => (  
-            <div key={stat.label} className="stat">
-              <span>{stat.label}</span>
-              <strong>{stat.value}</strong>
-            </div>
-          ))}
-        </div>
+        <a className="nav-item backend-link" href={`${backendUrl}/_/`} target="_blank" rel="noreferrer" onClick={openPocketBase}>
+          <ExternalLink size={18} />
+          <span>Open PocketBase</span>
+        </a>
+
         
 
         <div className="sidebar-card sidebar-about">

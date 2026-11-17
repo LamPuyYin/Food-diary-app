@@ -4,6 +4,7 @@ use std::{
     sync::Mutex,
     time::Duration,
 };
+use std::process::Command;
 
 use tauri::{Manager, RunEvent, State};
 use tauri_plugin_shell::{process::CommandChild, ShellExt};
@@ -12,6 +13,43 @@ use tauri_plugin_shell::{process::CommandChild, ShellExt};
 struct BackendState {
     child: Mutex<Option<CommandChild>>,
     url: Mutex<Option<String>>,
+}
+
+fn stop_backend(state: &BackendState) {
+    if let Ok(mut child) = state.child.lock() {
+        if let Some(child) = child.take() {
+            // CommandChild::kill terminates the process and waits for it to
+            // exit, releasing PocketBase's database file handles.
+            let _ = child.kill();
+        }
+    }
+}
+
+#[tauri::command]
+fn open_external_url(url: String) -> Result<(), String> {
+    if !(url.starts_with("http://") || url.starts_with("https://")) {
+        return Err("Only http and https URLs can be opened".to_owned());
+    }
+
+    #[cfg(target_os = "windows")]
+    Command::new("cmd")
+        .args(["/C", "start", "", &url])
+        .spawn()
+        .map_err(|error| format!("Could not open the external URL: {error}"))?;
+
+    #[cfg(target_os = "macos")]
+    Command::new("open")
+        .arg(&url)
+        .spawn()
+        .map_err(|error| format!("Could not open the external URL: {error}"))?;
+
+    #[cfg(target_os = "linux")]
+    Command::new("xdg-open")
+        .arg(&url)
+        .spawn()
+        .map_err(|error| format!("Could not open the external URL: {error}"))?;
+
+    Ok(())
 }
 
 fn available_port() -> Result<u16, String> {
@@ -44,6 +82,11 @@ async fn initialize_backend(
         .resource_dir()
         .map_err(|error| format!("Could not resolve bundled resources: {error}"))?
         .join("pb_migrations");
+    let hooks_dir = app
+        .path()
+        .resource_dir()
+        .map_err(|error| format!("Could not resolve bundled resources: {error}"))?
+        .join("pb_hooks");
 
     fs::create_dir_all(&data_dir)
         .map_err(|error| format!("Could not create the PocketBase data directory: {error}"))?;
@@ -57,6 +100,7 @@ async fn initialize_backend(
             format!("--http=127.0.0.1:{port}"),
             format!("--dir={}", data_dir.display()),
             format!("--migrationsDir={}", migrations_dir.display()),
+            format!("--hooksDir={}", hooks_dir.display()),
         ]);
 
     let (mut events, child) = command
@@ -89,18 +133,17 @@ pub fn run() {
     let app = tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .manage(BackendState::default())
-        .invoke_handler(tauri::generate_handler![initialize_backend])
+        .invoke_handler(tauri::generate_handler![initialize_backend, open_external_url])
         .build(tauri::generate_context!())
         .expect("error while building the Food Diary desktop app");
 
     app.run(|app_handle, event| {
-        if let RunEvent::Exit = event {
-            let state = app_handle.state::<BackendState>();
-            if let Ok(mut child) = state.child.lock() {
-                if let Some(child) = child.take() {
-                    let _ = child.kill();
-                }
-            };
+        let state = app_handle.state::<BackendState>();
+        match event {
+            // CloseRequested leads to ExitRequested. Stop PocketBase at the
+            // beginning of shutdown instead of waiting for final process exit.
+            RunEvent::ExitRequested { .. } | RunEvent::Exit => stop_backend(&state),
+            _ => {}
         }
     });
 }

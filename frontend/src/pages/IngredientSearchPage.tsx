@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { AlertTriangle, ChevronDown, Clock3, Search, ShieldCheck, Tags } from 'lucide-react'
+import { AlertTriangle, ChevronDown, Clock3, RefreshCw, Search, ShieldCheck, Tags } from 'lucide-react'
 import { extractIngredients, normalizeTags, type FoodLogRecord, type IngredientRecord, type SymptomLogRecord } from '../lib/tracker'
 import { calculateStatsTriggers, classificationFill } from './statsAnalysis'
 import { EvidenceBar } from './StatsPage'
@@ -9,6 +9,7 @@ type Props = {
   foodLogs: FoodLogRecord[]
   symptomLogs: SymptomLogRecord[]
   loading: boolean
+  onRefresh: () => Promise<void>
 }
 
 type IngredientInsight = {
@@ -47,7 +48,7 @@ const buildInsight = (ingredient: IngredientRecord, foodLogs: FoodLogRecord[], s
   }
 }
 
-export function IngredientSearchPage({ ingredients, foodLogs, symptomLogs, loading }: Props) {
+export function IngredientSearchPage({ ingredients, foodLogs, symptomLogs, loading, onRefresh }: Props) {
   const [query, setQuery] = useState('')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [showUserIngredients, setShowUserIngredients] = useState(true)
@@ -59,6 +60,9 @@ export function IngredientSearchPage({ ingredients, foodLogs, symptomLogs, loadi
     user: matches.filter(({ ingredient }) => !isFodmapLibraryIngredient(ingredient)),
     fodmap: matches.filter(({ ingredient }) => isFodmapLibraryIngredient(ingredient)),
   }), [matches])
+  const userGroupOpen = matchGroups.user.length > 0 && (matchGroups.fodmap.length === 0 || showUserIngredients)
+  const fodmapGroupOpen = matchGroups.fodmap.length > 0 && (matchGroups.user.length === 0 || showFodmapIngredients)
+  const hasBothGroups = matchGroups.user.length > 0 && matchGroups.fodmap.length > 0
 
   const handleQueryChange = (value: string) => {
     setQuery(value)
@@ -102,19 +106,26 @@ export function IngredientSearchPage({ ingredients, foodLogs, symptomLogs, loadi
           <span>{matches.length} found</span>
         </label>
         <div className="ingredient-explorer__body">
-          <div className={`ingredient-results ${showUserIngredients !== showFodmapIngredients ? 'ingredient-results--single-open' : ''}`}>
-            {loading ? <div className="empty-state">Loading ingredients…</div> : matches.length === 0 ? <div className="empty-state">No matching ingredients. Try a broader search.</div> : (
+          <div className={`ingredient-results ${hasBothGroups && userGroupOpen !== fodmapGroupOpen ? 'ingredient-results--single-open' : ''} ${!hasBothGroups ? 'ingredient-results--one-group' : ''}`}>
+            {loading ? <div className="empty-state">Loading ingredients…</div> : matches.length === 0 ? (
+              <div className="empty-state">
+                <span>No matching ingredients.</span>
+                <button type="button" className="ghost-button ghost-button--compact" onClick={() => void onRefresh()} disabled={loading}>
+                  <RefreshCw size={15} /> Refresh ingredients
+                </button>
+              </div>
+            ) : (
               <>
                 {[
-                  { key: 'user' as const, label: 'My ingredients', items: matchGroups.user, open: showUserIngredients, setOpen: setShowUserIngredients },
-                  { key: 'fodmap' as const, label: 'FODMAP library', items: matchGroups.fodmap, open: showFodmapIngredients, setOpen: setShowFodmapIngredients },
+                  { key: 'user' as const, label: 'My ingredients', items: matchGroups.user, open: userGroupOpen, setOpen: setShowUserIngredients },
+                  { key: 'fodmap' as const, label: 'FODMAP library', items: matchGroups.fodmap, open: fodmapGroupOpen, setOpen: setShowFodmapIngredients },
                 ].map((group) => (
-                  <section key={group.key} className={`ingredient-results__group ${group.open ? 'ingredient-results__group--open' : ''}`}>
+                  <section key={group.key} className={`ingredient-results__group ${group.open ? 'ingredient-results__group--open' : ''} ${group.items.length === 0 ? 'ingredient-results__group--empty' : ''}`}>
                     <div className="ingredient-results__group-header">
                       <span className="section-label">{group.label} <small>({group.items.length})</small></span>
-                      <button type="button" className="ghost-button ghost-button--compact" onClick={() => group.setOpen((current) => !current)} aria-expanded={group.open}>
+                      <button type="button" className="ghost-button ghost-button--compact" onClick={() => group.setOpen((current) => !current)} aria-expanded={group.open} disabled={group.items.length === 0}>
                         <ChevronDown size={16} className={`collapse-icon ${group.open ? 'open' : ''}`} />
-                        {group.open ? 'Hide' : 'Show'}
+                        {group.open || group.items.length === 0 ? 'Hide' : 'Show'}
                       </button>
                     </div>
                     {group.open ? (
