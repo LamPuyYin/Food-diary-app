@@ -2,8 +2,6 @@
 
 Gutmost is a private, native desktop food and symptom diary built primarily for tracking diarrhea-predominant IBS (IBS-D) triggers. It helps users record meals, ingredients, acute bowel episodes, and rapid food-to-symptom correlations over time.
 
-> **Medical & Scope Disclaimer:** Gutmost is a personal tracking tool tailored toward diarrhea-related triggers and loose-stool patterns. **Constipation and slow-transit tracking are not the focus of this application.** While the full Bristol Stool Scale is available for logging completeness, correlation analytics and trigger detection prioritize rapid gut transit and diarrhea episodes. Gutmost does not diagnose, treat, cure, or prevent any medical condition. Discuss symptoms and dietary changes with a qualified healthcare professional.
-
 ## Features
 
 - Record meals, dishes, ingredients, and exact meal times to track rapid post-meal reactions.
@@ -75,6 +73,11 @@ The migrations used by the app are in `server/pb_migrations`. Apply them to a se
 ## Data and attribution
 
 The FODMAP library has separate attribution requirements. Review and comply with the source's licence and attribution terms before redistributing FODMAP datasets or publishing a release that includes them. Gutmost is independent and is not endorsed by Monash University.
+
+
+
+
+> **Disclaimer:** Gutmost is a personal tracking tool tailored toward diarrhea-related triggers and loose-stool patterns. **Constipation and slow-transit tracking are not the focus of this application.** While the full Bristol Stool Scale is available for logging completeness, correlation analytics and trigger detection prioritize rapid gut transit and diarrhea episodes. Gutmost does not diagnose, treat, cure, or prevent any medical condition. Discuss symptoms and dietary changes with a qualified healthcare professional.
 
 
 ## Contributing
